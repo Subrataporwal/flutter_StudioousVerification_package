@@ -1,5 +1,5 @@
 
-# Studioous Verification
+# Studioous Project Verification
 
 Its a Studioous Flutter Verification Package Where We can put a Checkpoint on Flutter App Made By Studioous Team and Check Weather the Payment for the related Project is Recived Or Not.
 
