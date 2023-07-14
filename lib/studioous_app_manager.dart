@@ -77,29 +77,33 @@ class StudioousVerification extends StatefulWidget {
 }
 
 class _StudioousVerificationState extends State<StudioousVerification> {
+  void pageTimer() {
+    if (widget.futureNavigator == null) {
+      Timer(Duration(seconds: widget.durationInSeconds), () {
+        if (widget.navigator is String) {
+          Navigator.of(context).pushReplacementNamed(
+            widget.navigator as String,
+          );
+        } else if (widget.navigator is Widget) {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => widget.navigator as Widget));
+        }
+      });
+    } else {
+      widget.futureNavigator!.then((route) {
+        if (route is String) {
+          Navigator.of(context).pushReplacementNamed(route);
+        } else if (route is Widget) {
+          Navigator.of(context)
+              .pushReplacement(MaterialPageRoute(builder: (context) => route));
+        }
+      });
+    }
+  }
+
   Future<void> verificationFunc() async {
     if (widget.skipVerification == true) {
-      if (widget.futureNavigator == null) {
-        Timer(Duration(seconds: widget.durationInSeconds), () {
-          if (widget.navigator is String) {
-            Navigator.of(context).pushReplacementNamed(
-              widget.navigator as String,
-            );
-          } else if (widget.navigator is Widget) {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => widget.navigator as Widget));
-          }
-        });
-      } else {
-        widget.futureNavigator!.then((route) {
-          if (route is String) {
-            Navigator.of(context).pushReplacementNamed(route);
-          } else if (route is Widget) {
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => route));
-          }
-        });
-      }
+      pageTimer();
     } else {
       var request = http.Request(
           'GET',
@@ -113,8 +117,7 @@ class _StudioousVerificationState extends State<StudioousVerification> {
 
       if (response.statusCode == 200) {
         if (status == true) {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => widget.navigator as Widget));
+          pageTimer();
         } else {
           Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => const LockedPage()));
